@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "My First Extension",
+  "name": "AI Translation",
   "version": "1.0.0",
-  "description": "A basic Chrome extension",
+  "description": "AI Translation extension",
   "icons": {
     "16": "assets/16.png",
     "32": "assets/32.png",
