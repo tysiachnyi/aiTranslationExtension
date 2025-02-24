@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "My First Extension",
+  "version": "1.0.0",
+  "description": "A basic Chrome extension",
+  "icons": {
+    "16": "assets/16.png",
+    "32": "assets/32.png",
+    "48": "assets/48.png",
+    "128": "assets/128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "src/background/index.js"
+  },
+  "permissions": ["scripting", "activeTab"]
+}

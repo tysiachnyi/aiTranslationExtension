@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>Water Popup</title>
+    <style>
+      button {
+        height: 50px;
+        width: 200px;
+        font-size: 20px;
+        margin: 10px;
+        background-color: #10a37f;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      body {
+        background-color: #f7f7f8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 150px;
+        width: 250px;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="translatePage">Translate this page</button>
+    <button id="translateSelection">Translate selected text</button>
+    <script src="src/popup/index.js"></script>
+  </body>
+</html>
