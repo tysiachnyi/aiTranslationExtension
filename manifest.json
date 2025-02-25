@@ -15,5 +15,6 @@
   "background": {
     "service_worker": "src/background/index.js"
   },
-  "permissions": ["scripting", "activeTab"]
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["activeTab", "scripting"]
 }
