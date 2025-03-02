@@ -9,7 +9,7 @@ async function makePostRequest(content: string) {
       },
       body: JSON.stringify({
         model: "llama3",
-        prompt: `${promptAI} page data - ${content}`, // ❌ Fixed typo from "promt" to "prompt"
+        prompt: `${promptAI} page data - ${content}`,
         stream: false,
       }),
     });
@@ -47,6 +47,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ error: err.message });
       });
 
-    return true; // 🔥 Keeps the channel open for async response
+    return true;
   }
 });

@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       console.log("Tab ID:", tab.id);
 
-      // Execute script in the tab to get page content
       const result = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
