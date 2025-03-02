@@ -21,16 +21,32 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 150px;
+        min-height: 200px;
         width: 250px;
         margin: 0;
         font-family: Arial, sans-serif;
+      }
+      #response {
+        width: 200px;
+        font-size: 14px;
+        color: black;
+        background: white;
+        padding: 5px;
+        margin-top: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        word-wrap: break-word;
+        max-height: 100px;
+        overflow-y: auto;
       }
     </style>
   </head>
   <body>
     <button id="translatePage">Translate this page</button>
     <button id="translateSelection">Translate selected text</button>
+    <button id="sendRequest">Send POST Request</button>
+    <div id="response"></div>
+
     <script src="src/popup/index.js"></script>
   </body>
 </html>

@@ -1,55 +1,49 @@
 console.log("Popup script loaded!");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Get button elements with type assertion
   const translatePageBtn = document.getElementById(
     "translatePage"
-  ) as HTMLButtonElement;
+  ) as HTMLButtonElement | null;
   const translateSelectionBtn = document.getElementById(
     "translateSelection"
-  ) as HTMLButtonElement;
+  ) as HTMLButtonElement | null;
+  const sendRequest = document.getElementById(
+    "sendRequest"
+  ) as HTMLButtonElement | null;
+  const responseChrome = document.getElementById(
+    "response"
+  ) as HTMLDivElement | null;
 
-  if (!translatePageBtn || !translateSelectionBtn) {
-    alert("Button not found");
+  if (
+    !translatePageBtn ||
+    !translateSelectionBtn ||
+    !sendRequest ||
+    !responseChrome
+  ) {
+    console.error("One or more buttons not found in popup.");
     return;
   }
 
-  // Add click event listener for translating page
-  translatePageBtn.addEventListener("click", async () => {
-    console.log("Button clicked - starting translation process");
-    try {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      console.log("Current tab:", tab);
-
-      if (!tab.id) {
-        throw new Error("Tab ID is undefined");
-      }
-      console.log("Tab ID:", tab.id);
-
-      // Execute script in the tab to get page content
-      const result = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          console.log("Executing content script");
-          return document.body.innerText;
-        },
-      });
-      console.log("Script execution result:", result);
-
-      const pageContent = result[0].result;
-      console.log("Page content:", pageContent);
-    } catch (error) {
-      console.error("Error accessing tab content:", error);
-      alert(`Error accessing page content: ${error}`);
-    }
+  sendRequest.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ action: "sendPostRequest" }, (response) => {
+      console.log("Response from background:", response);
+      responseChrome.innerText = response?.error
+        ? `Error: ${response.error}`
+        : JSON.stringify(response, null, 2);
+    });
   });
 
-  // Add click event listener for translating selection
-  translateSelectionBtn.addEventListener("click", async () => {
-    await alert("Translate selection button clicked");
-    // Add your translation logic here
+  translatePageBtn.addEventListener("click", () => {
+    console.log("Translate Page button clicked");
+    chrome.runtime.sendMessage({ action: "sendPostRequest" }, (response) => {
+      console.log("Response from background:", response);
+      responseChrome.innerText = response?.error
+        ? `Error: ${response.error}`
+        : JSON.stringify(response, null, 2);
+    });
+  });
+
+  translateSelectionBtn.addEventListener("click", () => {
+    console.log("Translate Selection button clicked");
   });
 });

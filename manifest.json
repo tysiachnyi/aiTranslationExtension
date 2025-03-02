@@ -16,6 +16,6 @@
     "service_worker": "src/background/index.js",
     "type": "module"
   },
-  "host_permissions": ["<all_urls>"],
-  "permissions": ["activeTab", "scripting"]
+  "host_permissions": ["http://localhost:11434/*", "<all_urls>"],
+  "permissions": ["activeTab", "scripting", "tabs"]
 }

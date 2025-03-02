@@ -1,26 +1,30 @@
-/**
- * When chrome extension icon is clicked, append a button to
- * the DOM that when clicked sends an alert 'Hey WittCode!'
- */
-chrome.action.onClicked.addListener((tab) => {
-  chrome.scripting
-    .executeScript({
-      func: () => {
-        const myButton: HTMLButtonElement = document.createElement("button");
-        myButton.textContent = "Say hi to WittCode!";
-        myButton.onclick = () => {
-          alert("Hey WittCode!");
-        };
-        document.body.appendChild(myButton);
+async function makePostRequest() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      target: {
-        tabId: tab.id || 0,
-      },
-    })
-    .then(() => {
-      console.log("Button inserted");
-    })
-    .catch((err) => {
-      console.error("Button not inserted", err);
+      body: JSON.stringify({
+        title: "Hello",
+        body: "This is a test request",
+        userId: 1,
+      }),
     });
+
+    const data = await response.json();
+    console.log("Response:", data);
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    return { error: error };
+  }
+}
+
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "sendPostRequest") {
+    makePostRequest().then(sendResponse);
+    return true; // Keeps the message channel open for async response
+  }
 });
