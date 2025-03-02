@@ -1,5 +1,15 @@
 console.log("Popup script loaded!");
 
+function chunkString(str: string, chunkSize: number): string[] {
+  const chunks: string[] = [];
+  let index = 0;
+  while (index < str.length) {
+    chunks.push(str.slice(index, index + chunkSize));
+    index += chunkSize;
+  }
+  return chunks;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const translatePageBtn = document.getElementById(
     "translatePage"
@@ -61,15 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`Error accessing page content: ${error}`);
     }
 
-    chrome.runtime.sendMessage(
-      { action: "sendPostRequest", content: pageContent },
-      (response) => {
-        console.log("Response from background:", response);
-        responseChrome.innerText = response?.error
-          ? `Error: ${response.error}`
-          : JSON.stringify(response, null, 2);
+    if (pageContent) {
+      const pageChunks = chunkString(pageContent, 1800);
+
+      for (const chunk of pageChunks) {
+        chrome.runtime.sendMessage(
+          { action: "sendPostRequest", content: chunk },
+          (response) => {
+            console.log("Response from background:", response);
+            responseChrome.innerText = response?.error
+              ? `Error: ${response.error}`
+              : JSON.stringify(response, null, 2);
+          }
+        );
       }
-    );
+    }
   });
 
   translateSelectionBtn.addEventListener("click", () => {
