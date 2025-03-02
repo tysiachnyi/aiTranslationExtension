@@ -1,4 +1,6 @@
-async function makePostRequest() {
+const promptAI =
+  "You are a professional translator, translate this page to Russian";
+async function makePostRequest(content: string) {
   try {
     const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
@@ -7,7 +9,7 @@ async function makePostRequest() {
       },
       body: JSON.stringify({
         model: "llama3",
-        prompt: "Why is the sky blue?", // ❌ Fixed typo from "promt" to "prompt"
+        prompt: `${promptAI} page data - ${content}`, // ❌ Fixed typo from "promt" to "prompt"
         stream: false,
       }),
     });
@@ -35,7 +37,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Received message:", message);
 
   if (message.action === "sendPostRequest") {
-    makePostRequest()
+    makePostRequest(message.content)
       .then((data) => {
         console.log("Sending response back:", data);
         sendResponse(data); // Send the response back to popup.js

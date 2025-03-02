@@ -33,14 +33,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  translatePageBtn.addEventListener("click", () => {
+  translatePageBtn.addEventListener("click", async () => {
     console.log("Translate Page button clicked");
-    chrome.runtime.sendMessage({ action: "sendPostRequest" }, (response) => {
-      console.log("Response from background:", response);
-      responseChrome.innerText = response?.error
-        ? `Error: ${response.error}`
-        : JSON.stringify(response, null, 2);
-    });
+    let pageContent;
+    try {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      console.log("Current tab:", tab);
+
+      if (!tab.id) {
+        throw new Error("Tab ID is undefined");
+      }
+      console.log("Tab ID:", tab.id);
+
+      // Execute script in the tab to get page content
+      const result = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          console.log("Executing content script");
+          return document.body.innerHTML;
+        },
+      });
+      pageContent = result[0].result;
+    } catch (error) {
+      console.error("Error accessing tab content:", error);
+      alert(`Error accessing page content: ${error}`);
+    }
+
+    chrome.runtime.sendMessage(
+      { action: "sendPostRequest", content: pageContent },
+      (response) => {
+        console.log("Response from background:", response);
+        responseChrome.innerText = response?.error
+          ? `Error: ${response.error}`
+          : JSON.stringify(response, null, 2);
+      }
+    );
   });
 
   translateSelectionBtn.addEventListener("click", () => {
