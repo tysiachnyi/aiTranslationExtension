@@ -1,18 +1,28 @@
 async function makePostRequest() {
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        title: "Hello",
-        body: "This is a test request",
-        userId: 1,
+        model: "llama3",
+        prompt: "Why is the sky blue?", // ❌ Fixed typo from "promt" to "prompt"
+        stream: false,
       }),
     });
 
-    const data = await response.json();
+    console.log("Raw Response:", response);
+
+    // Check if the response is empty
+    const text = await response.text();
+    if (!text) {
+      console.error("Error: Empty response from server.");
+      return { error: "Empty response from server" };
+    }
+
+    // Parse JSON safely
+    const data = JSON.parse(text);
     console.log("Response:", data);
     return data;
   } catch (error) {
@@ -21,10 +31,20 @@ async function makePostRequest() {
   }
 }
 
-// Listen for messages from the popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Received message:", message);
+
   if (message.action === "sendPostRequest") {
-    makePostRequest().then(sendResponse);
-    return true; // Keeps the message channel open for async response
+    makePostRequest()
+      .then((data) => {
+        console.log("Sending response back:", data);
+        sendResponse(data); // Send the response back to popup.js
+      })
+      .catch((err) => {
+        console.error("Error in makePostRequest:", err);
+        sendResponse({ error: err.message });
+      });
+
+    return true; // 🔥 Keeps the channel open for async response
   }
 });
